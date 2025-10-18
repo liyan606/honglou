@@ -283,3 +283,102 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+/* 性能优化 - 硬件加速 */
+@layer utilities {
+  /* 为动画元素启用硬件加速 */
+  [class*="animate-"],
+  [class*="motion-"],
+  .will-change-transform {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* 视频和媒体元素优化 */
+  video,
+  img,
+  picture {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* 移动端性能优化 */
+  @media (max-width: 768px) {
+    /* 减少模糊效果的性能消耗 */
+    .glass,
+    .glass-strong {
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+    }
+
+    .glass-dark {
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+    }
+
+    /* 简化动画 */
+    * {
+      animation-duration: 0.4s !important;
+      transition-duration: 0.3s !important;
+    }
+
+    /* 优化滚动性能 */
+    * {
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* 禁用移动端的悬停效果以提升性能 */
+    *:hover {
+      transition: none !important;
+    }
+  }
+
+  /* 高性能模式 - 针对低端设备 */
+  @media (max-width: 768px) and (max-height: 900px) {
+    /* 进一步减少视觉效果 */
+    .glow-blue,
+    .glow-purple,
+    .glow-gradient {
+      box-shadow: none !important;
+    }
+
+    /* 减少阴影 */
+    * {
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
+  }
+
+  /* 优化触摸反馈 */
+  @media (pointer: coarse) {
+    * {
+      -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+      touch-action: manipulation;
+    }
+  }
+}
+
+/* 优化字体渲染 */
+@layer base {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1;
+  }
+
+  /* GPU加速的平滑滚动 */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 优化固定定位元素 */
+  .fixed,
+  [class*="fixed"] {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}

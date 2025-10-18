@@ -144,8 +144,20 @@ const stats = [
 export default function Home() {
   const [showBanner, setShowBanner] = useState(true);
   const [statValues, setStatValues] = useState(stats.map(s => s.baseNumber));
+  // 性能优化：检测移动设备
+  const [isMobile, setIsMobile] = useState(false);
 
-  // 每5秒更新一次统计数据
+  // 检测设备类型
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // 每5秒更新一次统计数据（移动端间隔更长以优化性能）
   useEffect(() => {
     const interval = setInterval(() => {
       setStatValues(stats.map(stat => {
@@ -153,19 +165,25 @@ export default function Home() {
         const randomVariance = (Math.random() - 0.5) * 2 * stat.variance;
         return stat.baseNumber + randomVariance;
       }));
-    }, 5000);
+    }, isMobile ? 8000 : 5000); // 移动端8秒，桌面端5秒
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isMobile]);
 
   return (
     <div className="min-h-screen relative">
-      {/* Etheral Shadow 全局背景 */}
+      {/* Etheral Shadow 全局背景 - 移动端优化 */}
       <div className="fixed inset-0 -z-10">
         <EtheralShadow
           color="rgba(128, 128, 128, 1)"
-          animation={{ scale: 100, speed: 90 }}
-          noise={{ opacity: 1, scale: 1.2 }}
+          animation={{ 
+            scale: isMobile ? 60 : 100, 
+            speed: isMobile ? 60 : 90 
+          }}
+          noise={{ 
+            opacity: isMobile ? 0.6 : 1, 
+            scale: isMobile ? 1 : 1.2 
+          }}
           sizing="fill"
         />
       </div>
@@ -179,6 +197,8 @@ export default function Home() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: isMobile ? 0.3 : 0.5, ease: "easeOut" }}
+          style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
           className="sticky top-20 sm:top-24 z-40 px-4 sm:px-6 pt-3 sm:pt-4"
         >
           <div className="max-w-6xl mx-auto">
@@ -342,10 +362,20 @@ export default function Home() {
             playsInline
             autoPlay
             muted
+            preload={isMobile ? "metadata" : "auto"}
+            poster="https://images.pexels.com/videos/8084758/pictures/preview-0.jpg"
             className="relative z-10 block h-auto max-h-full max-w-full object-contain align-middle rounded-2xl shadow-2xl"
+            style={{ 
+              transform: 'translateZ(0)',
+              willChange: 'transform'
+            }}
           >
+            {/* 移动端加载720p，桌面端加载1440p */}
             <source
-              src="https://videos.pexels.com/video-files/8084758/8084758-uhd_2560_1440_25fps.mp4"
+              src={isMobile 
+                ? "https://videos.pexels.com/video-files/8084758/8084758-hd_1280_720_25fps.mp4"
+                : "https://videos.pexels.com/video-files/8084758/8084758-uhd_2560_1440_25fps.mp4"
+              }
               type="video/mp4"
             />
           </video>
@@ -358,7 +388,9 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+            transition={{ duration: isMobile ? 0.4 : 0.6, ease: "easeOut" }}
+            style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
             className="text-center mb-20"
           >
             <GlowingEffect color="#a855f7" intensity={25}>
@@ -377,8 +409,9 @@ export default function Home() {
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+                transition={{ delay: index * 0.1, duration: isMobile ? 0.3 : 0.5, ease: "easeOut" }}
+                style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
               >
                 <GlowingEffect 
                   color={index % 3 === 0 ? '#3b82f6' : index % 3 === 1 ? '#a855f7' : '#ec4899'}
@@ -404,8 +437,9 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            transition={{ duration: isMobile ? 0.5 : 0.8, ease: "easeOut" }}
+            viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+            style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
           >
             <FeatureWithImageComparison
               beforeImage="https://images.unsplash.com/photo-1618477247222-acbdb0e159b3?w=800"
@@ -419,8 +453,9 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
+            transition={{ duration: isMobile ? 0.5 : 0.8, delay: 0.2, ease: "easeOut" }}
+            viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+            style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
           >
             <VideoThumbnailPlayer
               thumbnail="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1200"
@@ -436,7 +471,9 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+            transition={{ duration: isMobile ? 0.4 : 0.6, ease: "easeOut" }}
+            style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
             className="text-center mb-20"
           >
             <GlowingEffect color="#3b82f6" intensity={20}>
@@ -455,8 +492,9 @@ export default function Home() {
                 key={index}
                 initial={{ opacity: 0, scale: 0.5 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+                transition={{ delay: index * 0.1, duration: isMobile ? 0.3 : 0.5, ease: "easeOut" }}
+                style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
               >
                 <AnimatedGlowCard glowColor="#3b82f6">
                   <div className="text-center">
@@ -483,8 +521,9 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+            transition={{ duration: isMobile ? 0.5 : 0.8, ease: "easeOut" }}
+            style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
             className="text-center space-y-10"
           >
             {/* 主标题 */}
@@ -528,8 +567,9 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.8 }}
+              viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+              transition={{ delay: 0.3, duration: isMobile ? 0.5 : 0.8, ease: "easeOut" }}
+              style={{ transform: 'translateZ(0)', willChange: 'opacity' }}
               className="pt-12 flex flex-wrap justify-center gap-x-12 gap-y-6 text-white/40 text-sm"
             >
               <div className="flex items-center gap-2">
@@ -555,8 +595,9 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            viewport={{ once: true }}
+            transition={{ duration: isMobile ? 0.5 : 0.8, delay: 0.1, ease: "easeOut" }}
+            viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+            style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
             className="flex flex-col items-center justify-center max-w-[640px] mx-auto mb-16"
           >
             <div className="flex justify-center mb-6">
@@ -813,8 +854,9 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            transition={{ duration: isMobile ? 0.5 : 0.8, ease: "easeOut" }}
+            viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+            style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
             className="text-center mb-12"
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
@@ -828,8 +870,9 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
+            transition={{ duration: isMobile ? 0.5 : 0.8, delay: 0.2, ease: "easeOut" }}
+            viewport={{ once: true, margin: "-50px", amount: 0.3 }}
+            style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
             className="flex justify-center"
           >
             <SocialMediaGlass />
