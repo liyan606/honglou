@@ -304,79 +304,42 @@
     backface-visibility: hidden;
   }
 
-  /* 移动端性能优化 - 激进模式 */
+  /* 移动端性能优化 - 平衡版本 */
   @media (max-width: 768px) {
-    /* 完全禁用模糊效果 */
+    /* 减少模糊效果的性能消耗 */
     .glass,
     .glass-strong {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      background: rgba(255, 255, 255, 0.1) !important;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
     }
 
     .glass-dark {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      background: rgba(0, 0, 0, 0.5) !important;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
     }
 
-    /* 大幅简化动画 */
-    * {
-      animation-duration: 0.2s !important;
-      transition-duration: 0.15s !important;
-    }
-
-    /* 禁用复杂动画 */
+    /* 禁用Banner的复杂动画 */
     [class*="animate-gradient"],
-    [class*="animate-shimmer"],
-    [class*="animate-pulse"] {
+    [class*="animate-shimmer"] {
       animation: none !important;
     }
 
     /* 优化滚动性能 */
-    * {
+    html, body {
       -webkit-overflow-scrolling: touch;
-      scroll-behavior: auto !important;
     }
 
-    /* 完全禁用悬停效果 */
-    *:hover,
-    *:focus {
-      transition: none !important;
-      transform: none !important;
-    }
-
-    /* 禁用阴影和渐变以提升性能 */
-    * {
+    /* 简化大型元素的阴影（保留小元素阴影） */
+    section, 
+    .max-w-7xl,
+    .max-w-6xl {
       box-shadow: none !important;
-      text-shadow: none !important;
-    }
-
-    /* 简化边框 */
-    * {
-      border-radius: 8px !important;
-    }
-  }
-
-  /* 高性能模式 - 针对低端设备 */
-  @media (max-width: 768px) and (max-height: 900px) {
-    /* 进一步减少视觉效果 */
-    .glow-blue,
-    .glow-purple,
-    .glow-gradient {
-      box-shadow: none !important;
-    }
-
-    /* 减少阴影 */
-    * {
-      box-shadow: none !important;
-      text-shadow: none !important;
     }
   }
 
   /* 优化触摸反馈 */
   @media (pointer: coarse) {
-    * {
+    a, button, input, select, textarea {
       -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
       touch-action: manipulation;
     }
