@@ -62,9 +62,6 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   
-  // SWC压缩
-  swcMinify: true,
-  
   // 性能优化
   poweredByHeader: false,
   
@@ -73,8 +70,6 @@ const nextConfig: NextConfig = {
   
   // 实验性功能
   experimental: {
-    // 优化CSS
-    optimizeCss: true,
     // 优化包导入
     optimizePackageImports: ['framer-motion', 'lucide-react'],
   },
