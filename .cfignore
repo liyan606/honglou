@@ -1,0 +1,30 @@
+# Cloudflare Pages Ignore File
+# Ignore cache and unnecessary files
+
+# Next.js cache
+.next/cache
+cache
+
+# Build artifacts
+.next/server
+.next/static/webpack
+
+# Node modules
+node_modules
+
+# Development files
+.git
+.vscode
+.idea
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env*.local
+
+# Testing
+.specstory
+
