@@ -304,34 +304,57 @@
     backface-visibility: hidden;
   }
 
-  /* 移动端性能优化 */
+  /* 移动端性能优化 - 激进模式 */
   @media (max-width: 768px) {
-    /* 减少模糊效果的性能消耗 */
+    /* 完全禁用模糊效果 */
     .glass,
     .glass-strong {
-      backdrop-filter: blur(8px) !important;
-      -webkit-backdrop-filter: blur(8px) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: rgba(255, 255, 255, 0.1) !important;
     }
 
     .glass-dark {
-      backdrop-filter: blur(8px) !important;
-      -webkit-backdrop-filter: blur(8px) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: rgba(0, 0, 0, 0.5) !important;
     }
 
-    /* 简化动画 */
+    /* 大幅简化动画 */
     * {
-      animation-duration: 0.4s !important;
-      transition-duration: 0.3s !important;
+      animation-duration: 0.2s !important;
+      transition-duration: 0.15s !important;
+    }
+
+    /* 禁用复杂动画 */
+    [class*="animate-gradient"],
+    [class*="animate-shimmer"],
+    [class*="animate-pulse"] {
+      animation: none !important;
     }
 
     /* 优化滚动性能 */
     * {
       -webkit-overflow-scrolling: touch;
+      scroll-behavior: auto !important;
     }
 
-    /* 禁用移动端的悬停效果以提升性能 */
-    *:hover {
+    /* 完全禁用悬停效果 */
+    *:hover,
+    *:focus {
       transition: none !important;
+      transform: none !important;
+    }
+
+    /* 禁用阴影和渐变以提升性能 */
+    * {
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
+
+    /* 简化边框 */
+    * {
+      border-radius: 8px !important;
     }
   }
 

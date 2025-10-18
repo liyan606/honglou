@@ -172,21 +172,19 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative">
-      {/* Etheral Shadow 全局背景 - 移动端优化 */}
-      <div className="fixed inset-0 -z-10">
-        <EtheralShadow
-          color="rgba(128, 128, 128, 1)"
-          animation={{ 
-            scale: isMobile ? 60 : 100, 
-            speed: isMobile ? 60 : 90 
-          }}
-          noise={{ 
-            opacity: isMobile ? 0.6 : 1, 
-            scale: isMobile ? 1 : 1.2 
-          }}
-          sizing="fill"
-        />
-      </div>
+      {/* Etheral Shadow 全局背景 - 移动端优化（移动端使用静态渐变背景） */}
+      {!isMobile ? (
+        <div className="fixed inset-0 -z-10">
+          <EtheralShadow
+            color="rgba(128, 128, 128, 1)"
+            animation={{ scale: 100, speed: 90 }}
+            noise={{ opacity: 1, scale: 1.2 }}
+            sizing="fill"
+          />
+        </div>
+      ) : (
+        <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#0a0a0a] via-[#1a1a2e] to-[#0f0f23]" />
+      )}
 
       {/* Navigation */}
       <TubelightNavbar items={navItems} logo="Go社区" />
@@ -393,7 +391,7 @@ export default function Home() {
             style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
             className="text-center mb-20"
           >
-            <GlowingEffect color="#a855f7" intensity={25}>
+            <GlowingEffect color="#a855f7" intensity={isMobile ? 0 : 25}>
               <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
                 我们的优势
               </h2>
@@ -415,7 +413,7 @@ export default function Home() {
               >
                 <GlowingEffect 
                   color={index % 3 === 0 ? '#3b82f6' : index % 3 === 1 ? '#a855f7' : '#ec4899'}
-                  intensity={15}
+                  intensity={isMobile ? 0 : 15}
                 >
                   <div className="relative h-full bg-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/10 hover:border-white/20 transition-all duration-300 group">
                     <div className={`mb-6 ${index % 3 === 0 ? 'text-blue-400' : index % 3 === 1 ? 'text-purple-400' : 'text-pink-400'} transform group-hover:scale-110 transition-transform duration-300`}>
@@ -476,7 +474,7 @@ export default function Home() {
             style={{ transform: 'translateZ(0)', willChange: 'transform, opacity' }}
             className="text-center mb-20"
           >
-            <GlowingEffect color="#3b82f6" intensity={20}>
+            <GlowingEffect color="#3b82f6" intensity={isMobile ? 0 : 20}>
               <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
                 值得信赖
               </h2>
