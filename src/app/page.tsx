@@ -172,19 +172,21 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative">
-      {/* Etheral Shadow 全局背景 - 移动端优化（移动端使用静态渐变背景） */}
-      {!isMobile ? (
-        <div className="fixed inset-0 -z-10">
-          <EtheralShadow
-            color="rgba(128, 128, 128, 1)"
-            animation={{ scale: 100, speed: 90 }}
-            noise={{ opacity: 1, scale: 1.2 }}
-            sizing="fill"
-          />
-        </div>
-      ) : (
-        <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#0a0a0a] via-[#1a1a2e] to-[#0f0f23]" />
-      )}
+      {/* Etheral Shadow 全局背景 - 移动端静态版本 */}
+      <div className="fixed inset-0 -z-10">
+        <EtheralShadow
+          color="rgba(128, 128, 128, 1)"
+          animation={{ 
+            scale: isMobile ? 0 : 100,  // 移动端禁用动画
+            speed: isMobile ? 0 : 90    // 移动端禁用速度
+          }}
+          noise={{ 
+            opacity: isMobile ? 0.5 : 1,    // 移动端降低噪点
+            scale: isMobile ? 1 : 1.2 
+          }}
+          sizing="fill"
+        />
+      </div>
 
       {/* Navigation */}
       <TubelightNavbar items={navItems} logo="Go社区" />
